@@ -8,6 +8,112 @@ import base64,random,os,hashlib,time
 # Hir I made diffrent Encode and decodde logarthme So if you want to dev just add  new logarthme    #
 #####################################################################################################
 
+#Thanks for Net-Centric Computing Assignment for they free RSA python code
+
+###################################################################################################
+############################# This For help   #####################################################
+###################################################################################################
+
+def random_line(dir):
+    lines = open(dir).read().splitlines()
+    myline = random.choice(lines)
+    return myline
+
+
+
+def gcd(a, b):
+    while b != 0:
+        a, b = b, a % b
+    return a
+
+
+def multiplicative_inverse(e, phi):
+    d = 0
+    x1 = 0
+    x2 = 1
+    y1 = 1
+    temp_phi = phi
+
+    while e > 0:
+        temp1 = temp_phi / e
+        temp2 = temp_phi - temp1 * e
+        temp_phi = e
+        e = temp2
+
+        x = x2 - temp1 * x1
+        y = d - temp1 * y1
+
+        x2 = x1
+        x1 = x
+        d = y1
+        y1 = y
+
+    if temp_phi == 1:
+        return d + phi
+
+
+'''
+Tests to see if a number is prime.
+'''
+
+
+def is_prime(num):
+    if num == 2:
+        return True
+    if num < 2 or num % 2 == 0:
+        return False
+    for n in xrange(3, int(num ** 0.5) + 2, 2):
+        if num % n == 0:
+            return False
+    return True
+
+
+def generate_keypair(p, q):
+    if not (is_prime(p) and is_prime(q)):
+        raise ValueError('Both numbers must be prime.')
+    elif p == q:
+        raise ValueError('p and q cannot be equal')
+    # n = pq
+    n = p * q
+
+    # Phi is the totient of n
+    phi = (p - 1) * (q - 1)
+
+    # Choose an integer e such that e and phi(n) are coprime
+    e = random.randrange(1, phi)
+
+    # Use Euclid's Algorithm to verify that e and phi(n) are comprime
+    g = gcd(e, phi)
+    while g != 1:
+        e = random.randrange(1, phi)
+        g = gcd(e, phi)
+
+    # Use Extended Euclid's Algorithm to generate the private key
+    d = multiplicative_inverse(e, phi)
+
+    # Return public and private keypair
+    # Public key is (e, n) and private key is (d, n)
+    return ((e, n), (d, n))
+
+
+def encrypt(pk, plaintext):
+    # Unpack the key into it's components
+    key, n = pk
+    # Convert each letter in the plaintext to numbers based on the character using a^b mod m
+    cipher = [(ord(char) ** key) % n for char in plaintext]
+    # Return the array of bytes
+    return str(cipher)
+
+
+def decrypt(pk, ciphertext):
+    # Unpack the key into its components
+    key, n = pk
+    # Generate the plaintext based on the ciphertext and key using a^b mod m
+    plain = [chr((char ** key) % n) for char in ciphertext]
+    # Return the array of bytes as a string
+    return str(''.join(plain))
+
+
 
 ######################################################################################################################
 ###########################################       Encoding          ##################################################
@@ -41,8 +147,30 @@ def encodeAES(key,dir):
     else:
         print("The File is already encrypt")
 
+def encodeRSA(privateKey,dir):
+    if '.cry' not in dir:
+        files = open(dir,"r")
+        think = files.read()
+        files.close()
+        print(think)
+        os.system('clear')
+        print("encoding data of the file [It will take Some time] ...")
+        ########################################################################
+        encoded = encrypt(privateKey,think)
+        ###########################################################################
+        print(encoded)
+        time.sleep(3)
+        print('writing in you file ...')
+        os.remove(dir)
+        newfile = open(dir + '.cry',"w")
+        newfile.write(encoded)
+        newfile.close()
+    else:
+        print("The File is already encrypt")
 
-def encodeXOR(key,dir):
+
+
+def encodeXOR(key, dir):
     if '.cry' not in dir:
         files = open(dir,"r")
         think = files.read()
@@ -54,7 +182,7 @@ def encodeXOR(key,dir):
         ########################################################################
         secret = hashlib.md5(key).hexdigest()
         cipher = XOR.new(secret)
-        encoded = base64.b64encode(cipher.encrypt(read))
+        encoded = base64.b64encode(cipher.encrypt(think))
         ###########################################################################
         print(encoded)
         time.sleep(3)
@@ -163,7 +291,7 @@ def decodeAES(key,dir):
     else:
         print("The File is not encrypt to Decrypt")
 
-def decode_XOR(key,dir):
+def decodeXOR(key,dir):
     if '.cry' in dir:
         files = open(dir,"r")
         think = files.read()
@@ -174,7 +302,7 @@ def decode_XOR(key,dir):
         ############################################################################
         secret = hashlib.md5(key).hexdigest()
         cipher = XOR.new(secret)
-        encoded = cipher.decrypt(base64.b64decode(read))
+        decoded = cipher.decrypt(base64.b64decode(think))
         ###########################################################################
         print(decoded)
         name = dir.replace('.cry',"")
@@ -186,7 +314,7 @@ def decode_XOR(key,dir):
     else:
         print("The File is not encrypt to Decrypt")
 
-def decode_BASE64(dir):
+def decodeBASE64(dir):
     if '.cry' in dir:
         files = open(dir,"r")
         think = files.read()
@@ -195,7 +323,7 @@ def decode_BASE64(dir):
         os.system('clear')
         print('Decoding your data File....')
         ############################################################################
-        encoded = base64.b64decode(think)
+        decoded = base64.b64decode(think)
         ###########################################################################
         print(decoded)
         name = dir.replace('.cry',"")
@@ -207,7 +335,7 @@ def decode_BASE64(dir):
     else:
         print("The File is not encrypt to Decrypt")
 
-def decode_BASE32(dir):
+def decodeBASE32(dir):
     if '.cry' in dir:
         files = open(dir,"r")
         think = files.read()
@@ -216,7 +344,7 @@ def decode_BASE32(dir):
         os.system('clear')
         print('Decoding your data File....')
         ############################################################################
-        encoded = base64.b32decode(think)
+        decoded = base64.b32decode(think)
         ###########################################################################
         print(decoded)
         name = dir.replace('.cry',"")
@@ -228,7 +356,7 @@ def decode_BASE32(dir):
     else:
         print("The File is not encrypt to Decrypt")
 
-def decode_BASE16(dir):
+def decodeBASE16(dir):
     if '.cry' in dir:
         files = open(dir,"r")
         think = files.read()
@@ -237,7 +365,7 @@ def decode_BASE16(dir):
         os.system('clear')
         print('Decoding your data File....')
         ############################################################################
-        encoded = base64.b16decode(think)
+        decoded = base64.b16decode(think)
         ###########################################################################
         print(decoded)
         name = dir.replace('.cry',"")
@@ -250,11 +378,29 @@ def decode_BASE16(dir):
         print("The File is not encrypt to Decrypt")
 
 
-###################################################################################################
-############################# This For help   #####################################################
-###################################################################################################
 
-def random_line(dir):
-    lines = open(dir).read().splitlines()
-    myline = random.choice(lines)
-    return myline
+def decodeRSA(privatkey,dir):
+    if '.cry' in dir:
+        files = open(dir,"r")
+        think = files.read()
+        files.close()
+        think = float(think)
+        print(think)
+        os.system('clear')
+        print('Decoding your data File....')
+        ############################################################################
+        decoded = decrypt(privatkey,think)
+        decoded =''.join(map(lambda x: str(x), encrypted_msg))
+        ###########################################################################
+        print(decoded)
+        name = dir.replace('.cry',"")
+        os.remove(dir)
+        print('writing in to your file...')
+        newfile = open(name,"w")
+        newfile.write(decoded)
+        newfile.close()
+    else:
+        print("The File is not encrypt to Decrypt")
+
+
+
