@@ -124,7 +124,6 @@ def encodeAES(key,dir):
         files = open(dir,"r")
         think = files.read()
         files.close()
-        print(think)
         os.system('clear')
         print("encoding data of the file ...")
         time.sleep(3)
@@ -137,7 +136,6 @@ def encodeAES(key,dir):
         cipher = AES.new(secret)
         encoded = EncodeAES(cipher, think)
         ###########################################################################
-        print(encoded)
         time.sleep(3)
         print('writing in you file ...')
         os.remove(dir)
@@ -152,13 +150,12 @@ def encodeRSA(privateKey,dir):
         files = open(dir,"r")
         think = files.read()
         files.close()
-        print(think)
+
         os.system('clear')
         print("encoding data of the file [It will take Some time] ...")
         ########################################################################
         encoded = encrypt(privateKey,think)
         ###########################################################################
-        print(encoded)
         time.sleep(3)
         print('writing in you file ...')
         os.remove(dir)
@@ -175,7 +172,7 @@ def encodeXOR(key, dir):
         files = open(dir,"r")
         think = files.read()
         files.close()
-        print(think)
+
         os.system('clear')
         print("encoding data of the file ...")
         time.sleep(3)
@@ -184,7 +181,6 @@ def encodeXOR(key, dir):
         cipher = XOR.new(secret)
         encoded = base64.b64encode(cipher.encrypt(think))
         ###########################################################################
-        print(encoded)
         time.sleep(3)
         print('writing in you file ...')
         os.remove(dir)
@@ -199,7 +195,7 @@ def encodeBASE64(dir):
         files = open(dir,"r")
         think = files.read()
         files.close()
-        print(think)
+
         os.system('clear')
         print("encoding data of the file ...")
         time.sleep(3)
@@ -207,7 +203,6 @@ def encodeBASE64(dir):
         ########################################################################
         encoded = base64.b64encode(think)
         ###########################################################################
-        print(encoded)
         time.sleep(3)
         print('writing in you file ...')
         os.remove(dir)
@@ -222,14 +217,13 @@ def encodeBASE32(dir):
         files = open(dir,"r")
         think = files.read()
         files.close()
-        print(think)
+
         os.system('clear')
         print("encoding data of the file ...")
         time.sleep(3)
         ########################################################################
         encoded = base64.b32encode(think)
         ###########################################################################
-        print(encoded)
         time.sleep(3)
         print('writing in you file ...')
         os.remove(dir)
@@ -244,14 +238,13 @@ def encodeBASE16(dir):
         files = open(dir,"r")
         think = files.read()
         files.close()
-        print(think)
+
         os.system('clear')
         print("encoding data of the file ...")
         time.sleep(3)
         ########################################################################
         encoded = base64.b16encode(think)
         ###########################################################################
-        print(encoded)
         time.sleep(3)
         print('writing in you file ...')
         os.remove(dir)
@@ -271,17 +264,18 @@ def decodeAES(key,dir):
         files = open(dir,"r")
         think = files.read()
         files.close()
-        print(think)
+
         os.system('clear')
         print('Decoding your data File....')
         ############################################################################
         PADDING = '{'
         DecodeAES = lambda c, e: c.decrypt(base64.b64decode(e)).rstrip(PADDING)
-        secret = hashlib.md5(key).hexdigest()
+        secret = hashlib.md5(str(key).encode('utf-8')).hexdigest()
+        print(secret)
+        print(len(secret))
         cipher = AES.new(secret)
         decoded = DecodeAES(cipher, think)
         ###########################################################################
-        print(decoded)
         name = dir.replace('.cry',"")
         os.remove(dir)
         print('writing in to your file...')
@@ -296,7 +290,7 @@ def decodeXOR(key,dir):
         files = open(dir,"r")
         think = files.read()
         files.close()
-        print(think)
+
         os.system('clear')
         print('Decoding your data File....')
         ############################################################################
@@ -304,7 +298,6 @@ def decodeXOR(key,dir):
         cipher = XOR.new(secret)
         decoded = cipher.decrypt(base64.b64decode(think))
         ###########################################################################
-        print(decoded)
         name = dir.replace('.cry',"")
         os.remove(dir)
         print('writing in to your file...')
@@ -319,13 +312,12 @@ def decodeBASE64(dir):
         files = open(dir,"r")
         think = files.read()
         files.close()
-        print(think)
+
         os.system('clear')
         print('Decoding your data File....')
         ############################################################################
         decoded = base64.b64decode(think)
         ###########################################################################
-        print(decoded)
         name = dir.replace('.cry',"")
         os.remove(dir)
         print('writing in to your file...')
@@ -340,13 +332,12 @@ def decodeBASE32(dir):
         files = open(dir,"r")
         think = files.read()
         files.close()
-        print(think)
+
         os.system('clear')
         print('Decoding your data File....')
         ############################################################################
         decoded = base64.b32decode(think)
         ###########################################################################
-        print(decoded)
         name = dir.replace('.cry',"")
         os.remove(dir)
         print('writing in to your file...')
@@ -361,13 +352,12 @@ def decodeBASE16(dir):
         files = open(dir,"r")
         think = files.read()
         files.close()
-        print(think)
+
         os.system('clear')
         print('Decoding your data File....')
         ############################################################################
         decoded = base64.b16decode(think)
         ###########################################################################
-        print(decoded)
         name = dir.replace('.cry',"")
         os.remove(dir)
         print('writing in to your file...')
@@ -385,14 +375,13 @@ def decodeRSA(privatkey,dir):
         think = files.read()
         files.close()
         think = float(think)
-        print(think)
+
         os.system('clear')
         print('Decoding your data File....')
         ############################################################################
         decoded = decrypt(privatkey,think)
         decoded =''.join(map(lambda x: str(x), encrypted_msg))
         ###########################################################################
-        print(decoded)
         name = dir.replace('.cry',"")
         os.remove(dir)
         print('writing in to your file...')
@@ -401,6 +390,3 @@ def decodeRSA(privatkey,dir):
         newfile.close()
     else:
         print("The File is not encrypt to Decrypt")
-
-
-

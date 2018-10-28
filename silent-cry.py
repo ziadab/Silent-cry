@@ -16,11 +16,12 @@ import os,time
 #This lib i made it and it have some encryption logarithm IF YOu wanT to developed you can add others logarithm in the endecode file
 import endecode
 import arts
+import getpass
 
 os.system('clear')
 
 print(arts.art1())
-time.sleep(2)
+#time.sleep(2)
 os.system('clear')
 
 print(arts.art1())
@@ -47,7 +48,7 @@ if Ibtissam == '1':
         print("Do you want For me to random a key [y/n] :")
         anser = raw_input(">>> ")
         if anser == "n":
-            key= raw_input("\033[95m[?] \033[97mEnter your \033[97m\033[91mKEY \033[97m:\033[93m")
+            key= getpass.getpass("\033[95m[?] \033[97mEnter your \033[97m\033[91mKEY \033[97m:\033[93m")
             pass
         else:
             key = endecode.random_line('keys.txt')
@@ -60,7 +61,7 @@ if Ibtissam == '1':
         print("Do you want For me to random a key [y/n] :")
         anser = raw_input(">>> ")
         if anser == "n":
-            key = raw_input("\033[95m[?] \033[97mEnter your \033[97m\033[91mKEY \033[97m:\033[93m")
+            key = getpass.getpass("\033[95m[?] \033[97mEnter your \033[97m\033[91mKEY \033[97m:\033[93m")
             pass 
         else:
             key = endecode.random_line('keys.txt')
@@ -118,7 +119,7 @@ if Ibtissam == '2':
     salma =raw_input("\033[93m+>>" )
 ##############################################################################################
     if salma == str(1) or salma == "1":
-        key= raw_input("\033[95m[?] \033[97mEnter your \033[97m\033[91mKEY \033[97m:\033[93m")
+        key= getpass.getpass("\033[95m[?] \033[97mEnter your \033[97m\033[91mKEY \033[97m:\033[93m")
         file_location=raw_input("\033[95m[?] \033[97mDrag the \033[91mfile\033[97m:\033[93m")
         endecode.decodeAES(key,file_location)
         print("Your File was Decrypt by SUCCESS ;) ")
